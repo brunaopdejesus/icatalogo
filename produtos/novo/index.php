@@ -1,3 +1,16 @@
+<?php
+
+// CONEXÃO COM O BANCO DE DADOS
+require('../../database/conexao.php');
+
+// QUERY SQL
+$sql = "SELECT * FROM tbl_categoria";
+
+// EXECUTAR A QUERY SQL NA BASE DE DADOS
+$resultado = mysqli_query($conexao, $sql);
+
+?>
+
 <!DOCTYPE html>
 <html lang="pt-br">
 
@@ -70,8 +83,18 @@
             <select id="categoria" name="categoria" required>
               <option value="">SELECIONE</option>
               
-                <option value=""></option>
-              
+              <!-- INÍCIO DA LISTAGEM DE CATEGORIAS VINDAS DO BANCO -->
+              <?php
+                
+                while ($categoria = mysqli_fetch_array($resultado)) {
+
+              ?>
+              <option value="<?php echo $categoria["id"]?>"><?php echo $categoria["descricao"]?></option>
+
+              <?php } ?>
+
+              <!-- FIM DA LISTAGEM DE CATEGORIAS -->
+
             </select>
 
           </div>
@@ -81,7 +104,7 @@
             <input type="file" name="foto" id="foto" accept="image/*" />
           </div>
 
-          <button onclick="javascript:window.location.href = '../'">Cancelar</button>
+          <button onclick="javascript:window.location.href = '../acoes.php'">Cancelar</button>
           <button>Salvar</button>
 
         </form>
