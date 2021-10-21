@@ -160,15 +160,69 @@
 
             break;
 
-            case 'deletar':
+        // case 'deletar':
 
-                $produtoId = $_POST["produtoId"];
-                $sql = "DELETE FROM tbl_produto WHERE id = $produtoId";
-                $resultado = mysqli_query($conexao, $sql);
+        //     $produtoId = $_POST["produtoId"];
+        //     $sql = "DELETE FROM tbl_produto WHERE id = $produtoId";
+        //     $resultado = mysqli_query($conexao, $sql);
 
-                header('location: index.php');
+        //     header('location: index.php');
 
-                break;
+        //     break;
+
+        case "deletar":
+
+            $produtoId = $_POST["produtoId"];
+
+            $sql = "SELECT imagem FROM tbl_produto WHERE id = $produtoId";
+
+            $resultado = mysqli_query($conexao, $sql);
+
+            $produto = mysqli_fetch_array($resultado);
+
+            $sql = "DELETE FROM tbl_produto WHERE id = $produtoId";
+
+            $resultado = mysqli_query($conexao, $sql);
+
+            unlink("./fotos/" . $produto[0]);
+
+            header("location: index.php");
+
+            break;
+
+
+        case 'editar':
+
+            // Atualizando a imagem do produto
+            $produtoId = $_POST['produtoId'];
+
+            if ($_FILES['foto']['error'] != UPLOAD_ERR_NO_FILE) {
+                
+                $sqlImagem = "SELECT imagem FROM tbl_produto WHERE id = $produtoId";
+
+                $resultado = mysqli_query($conexao, $sqlImagem);
+                $produto = mysqli_fetch_array($resultado);
+
+                echo '/fotos/' . $produto['imagem'];exit;
+
+            }
+
+            // Capturando os dados de texto e de número
+            $descricao = $_POST['descricao'];
+            $quantidade = $_POST['quantidade'];
+            $cor = $_POST['cor'];
+            $tamanho = $_POST['tamanho'];
+            $desconto = $_POST['desconto'];
+            $categoriaId = $_POST['categoria'];
+
+            $peso = str_replace(".", "", $_POST['peso']);
+            $peso = str_replace(",", ".", $peso);
+
+            $valor = str_replace(".", "", $_POST['valor']);
+            $valor = str_replace(",", ".", $valor);
+
+
+            break;
 
         default:
             # code...
