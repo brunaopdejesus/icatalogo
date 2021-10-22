@@ -7,20 +7,19 @@
     function validarCampos(){
 
         //ARRAY DAS MENSAGENS DE ERRO
-
         $erros = [];
 
         //VALIDAÇÃO DE DESCRIÇÃO
         if ($_POST["descricao"] == "" || !isset($_POST["descricao"])) {
 
-            $erros[] = "O CAMPO DESCRIÇÃO É OBRIGATORIO";
+            $erros[] = "O CAMPO DESCRIÇÃO É OBRIGATÓRIO";
 
-        }
+        } 
         
         //VALIDAÇÃO DE PESO
         if ($_POST["peso"] == "" || !isset($_POST["peso"])) {
 
-            $erros[] = "O CAMPO PESO É OBRIGATORIO";
+            $erros[] = "O CAMPO PESO É OBRIGATÓRIO";
             
         } elseif(!is_numeric(str_replace(",", ".", $_POST["peso"]))){
 
@@ -31,7 +30,7 @@
         //VALIDAÇÃO DE QUANTIDADE
         if ($_POST["quantidade"] == "" || !isset($_POST["quantidade"])) {
 
-            $erros[] = "O CAMPO QUANTIDADE É OBRIGATORIO";
+            $erros[] = "O CAMPO QUANTIDADE É OBRIGATÓRIO";
 
         } elseif(!is_numeric(str_replace(",", ".", $_POST["quantidade"]))) {
 
@@ -110,6 +109,7 @@
     }
 
     switch ($_POST["acao"]) {
+
         case 'inserir':
 
             $erros = validarCampos();
@@ -170,6 +170,7 @@
 
         //     break;
 
+
         case "deletar":
 
             $produtoId = $_POST["produtoId"];
@@ -193,8 +194,22 @@
 
         case 'editar':
 
-            // Atualizando a imagem do produto
             $produtoId = $_POST['produtoId'];
+
+            // Processo de validação
+            $erros = validarCampos();
+
+            if (count($erros) > 0) {
+
+                $_SESSION["erros"] = $erros;
+
+                header("location: editar/index.php?id=$produtoId");
+
+                exit;
+
+            }
+
+            // Atualizando a imagem do produto
 
             if ($_FILES['foto']['error'] != UPLOAD_ERR_NO_FILE) {
                 
@@ -203,7 +218,20 @@
                 $resultado = mysqli_query($conexao, $sqlImagem);
                 $produto = mysqli_fetch_array($resultado);
 
-                echo '/fotos/' . $produto['imagem'];exit;
+                // Exclusão da foto antiga da pasta
+                unlink('./fotos/' . $produto['imagem']);
+
+                // Recupera o nome original da imagem e armazena na variável
+                $nomeArquivo = $_FILES['foto']['name'];
+
+                // Extrai a extensão do arquivo de imagem
+                $extensao = pathinfo($nomeArquivo, PATHINFO_EXTENSION);
+
+                // Define um nome aleatório para a imagem que será armazenada na pasta "fotos"
+                $novoNomeArquivo = md5(microtime()) . ".$extensao";
+
+                // Realiza o upload da imagem com o novo nome
+                move_uploaded_file($_FILES['foto']['tmp_name'], "fotos/$novoNomeArquivo");
 
             }
 
@@ -221,6 +249,27 @@
             $valor = str_replace(".", "", $_POST['valor']);
             $valor = str_replace(",", ".", $valor);
 
+            // Montagem e exclusão da instrução SQL de update
+            $sqlUpdate = "UPDATE tbl_produto SET
+                                descricao = '$descricao',
+                                peso = $peso,
+                                quantidade = $quantidade,
+                                cor = '$cor',
+                                tamanho = '$tamanho',
+                                valor = $valor,
+                                desconto = $desconto,
+                                categoria_id = $categoriaId";
+
+            // Verifica se tem imagem nova para atualizar
+            $sqlUpdate .= isset($novoNomeArquivo) ? ", imagem = '$novoNomeArquivo'" : "";
+
+            $sqlUpdate .= " WHERE id = $produtoId";
+
+            // echo $sqlUpdate; exit;
+
+            $resultado = mysqli_query($conexao, $sqlUpdate);
+
+            header ('location: index.php');
 
             break;
 
@@ -228,7 +277,5 @@
             # code...
             break;
     }
-
-
 
 ?>

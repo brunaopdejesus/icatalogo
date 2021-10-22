@@ -28,6 +28,9 @@
 
 <body>
 
+  <!-- INCLUSÃO DO COMPONENTE HEADER -->
+  <?php include('../../componentes/header/header.php'); ?>
+
   <div class="content">
 
     <section class="produtos-container">

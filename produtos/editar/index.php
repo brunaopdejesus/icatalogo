@@ -1,5 +1,7 @@
 <?php
 
+  session_start();
+
   require('../../database/conexao.php');
 
   $produtoId = $_GET['id'];
@@ -26,6 +28,9 @@
 </head>
 
 <body>
+
+  <?php include('../../componentes/header/header.php'); ?>
+
  
   <div class="content">
 
@@ -42,27 +47,37 @@
           <h1>Editar Produto</h1>
           
           <ul>
-      
+              <?php
+                  if (isset($_SESSION["erros"])) {
+
+                    foreach ($_SESSION["erros"] as $erro) {
+                        echo "<li> $erro </li>";
+                    }
+
+                    unset($_SESSION["erros"]);
+
+                  }
+              ?>
           </ul>
 
           <div class="input-group span2">
             <label for="descricao">Descrição</label>
-            <input type="text" name="descricao" value="<?php echo $produto['descricao'] ?>" id="descricao" required>
+            <input type="text" name="descricao" value="<?php echo $produto['descricao'] ?>" id="descricao">
           </div>
 
           <div class="input-group">
             <label for="peso">Peso</label>
-            <input type="text" name="peso" value="<?php echo number_format($produto['peso'], 2, ",", ".") ?>" id="peso" required>
+            <input type="text" name="peso" value="<?php echo number_format($produto['peso'], 2, ",", ".") ?>" id="peso">
           </div>
 
           <div class="input-group">
             <label for="quantidade">Quantidade</label>
-            <input type="text" name="quantidade" value="<?php echo $produto['quantidade'] ?>" id="quantidade" required>
+            <input type="text" name="quantidade" value="<?php echo $produto['quantidade'] ?>" id="quantidade">
           </div>
 
           <div class="input-group">
             <label for="cor">Cor</label>
-            <input type="text" name="cor" value="<?php echo $produto['cor'] ?>" id="cor" required>
+            <input type="text" name="cor" value="<?php echo $produto['cor'] ?>" id="cor">
           </div>
 
           <div class="input-group">
@@ -72,7 +87,7 @@
 
           <div class="input-group">
             <label for="valor">Valor</label>
-            <input type="text" name="valor" value="<?php echo number_format($produto['valor'], 2,",", ".") ?>" id="valor" required>
+            <input type="text" name="valor" value="<?php echo number_format($produto['valor'], 2,",", ".") ?>" id="valor">
           </div>
 
           <div class="input-group">
