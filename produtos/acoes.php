@@ -262,10 +262,7 @@
 
             // Verifica se tem imagem nova para atualizar
             $sqlUpdate .= isset($novoNomeArquivo) ? ", imagem = '$novoNomeArquivo'" : "";
-
             $sqlUpdate .= " WHERE id = $produtoId";
-
-            // echo $sqlUpdate; exit;
 
             $resultado = mysqli_query($conexao, $sqlUpdate);
 

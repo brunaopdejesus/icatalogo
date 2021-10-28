@@ -9,7 +9,7 @@
 <header class="header">
 
     <figure>
-        <a href="/produtos">
+        <a href="<?php echo $raiz ?>/produtos">
             <img src="<?php echo $raiz ?>/imgs/logo.png" />
         </a>
     </figure>
@@ -31,9 +31,11 @@
                 <button>Entrar</button>
             </form>
         </div>
+
     <?php
-    } else {
+        } else {
     ?>
+
         <nav>
             <ul>
                 <a id="menu-admin" onclick="logout()">Sair</a>
@@ -42,11 +44,11 @@
         <form id="form-logout" style="display:none" method="POST" action="/componentes/header/acoesLogin.php">
             <input type="hidden" name="acao" value="logout" />
         </form>
+
     <?php
-    }
+        }
     ?>
 
-   
 </header>
 
 <script lang="javascript">
@@ -66,6 +68,7 @@
             form.style.display = "flex";
             containerLogin.style.opacity = 1;
             containerLogin.style.height = "200px";
+        
             //se não, oculta
         } else {
             h1Form.style.display = "none";
