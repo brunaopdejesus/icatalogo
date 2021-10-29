@@ -1,7 +1,10 @@
 <?php
 
+    session_start();
+
     require('../../database/conexao.php');
 
+    // FUNÇÕES DE LOGIN/LOGOUT
     function realizarLogin($usuario, $senha, $conexao) {
 
         $sql = "SELECT * FROM tbl_administrador 
@@ -10,18 +13,42 @@
         $resultado = mysqli_query($conexao, $sql);
         $dadosUsuario = mysqli_fetch_array($resultado);
 
-        if (isset($dadosUsuario["usuario"]) && isset($dadosUsuario["senha"])) {
+        if (isset($dadosUsuario["usuario"]) && isset($dadosUsuario["senha"]) && password_verify($senha, $dadosUsuario["senha"])) {
+
+            $_SESSION["usuarioId"] = $dadosUsuario["id"];
+            $_SESSION["nome"] = $dadosUsuario["nome"];
             
-            echo 'Login executado com sucesso!';
+            header("location: ../../produtos/index.php");
 
         } else {
 
-            echo 'Algo deu errado...';
-        
+            echo "tenta de novo, burra";
+            // header("location: ../../produtos/index.php");
+            
         }
 
     }
 
-    realizarLogin('bruna', '1234', $conexao);
+
+    switch ($_POST['acao']) {
+        case 'login':
+
+            $usuario = $_POST["usuario"];
+            $senha = $_POST["senha"];
+
+            realizarLogin($usuario, $senha, $conexao);
+
+            break;
+
+        case 'logout':
+
+            session_destroy();
+
+            header ('location: ../../produtos/index.php');
+        
+        default:
+            # code...
+            break;
+    }
 
 ?>
